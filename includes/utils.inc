@@ -2,13 +2,13 @@
 
 /**
  * @file
- * Holds the ajax callbacks for the rotator module.
+ * Holds the ajax callbacks for the Accordion module.
  */
 
 /**
  * Page callback: Accordion Rotator settings.
  */
-function accordion_rotator_form($form, &$form_state) {
+function accordion_module_form($form, &$form_state) {
   $form['accordion_pid_list'] = array(
     '#type' => 'textfield',
     '#title' => t('A comma seperated list of PIDs to use for image data sources'),
@@ -29,7 +29,7 @@ function accordion_rotator_form($form, &$form_state) {
  *   The form element to
  *   validate.
  */
-function accordion_rotator_form_validate($element) {
+function accordion_module_form_validate($element) {
   module_load_include('inc', 'islandora', 'includes/IslandoraTuque');
   module_load_include('inc', 'islandora', 'includes/datastream');
 
@@ -49,7 +49,7 @@ function accordion_rotator_form_validate($element) {
   /**
    * Callback to setup variables for the accordion.
    */
-function accordion_rotator_canvas_setup($place) {
+function accordion_module_canvas_setup($place) {
 
   module_load_include('inc', 'islandora', 'includes/IslandoraTuque');
   module_load_include('inc', 'islandora', 'includes/datastream');

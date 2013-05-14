@@ -1,0 +1,106 @@
+<?php
+/**
+ * @file
+ * A block module that displays images from a list of PID's
+ * in an interactive accordion module. Based off Accordion Module v1.0.
+ */
+
+/**
+ * Implements hook_help().
+ *
+ * Displays help and module information.
+ */
+function accordion_module_help($path, $arg) {
+  switch ($path) {
+    case "admin/help#accordion_m":
+      return '<p>' . t("Displays images including a user selected list of PID's for display on the frontpage accordion module") . '</p>';
+
+    break;
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function accordion_module_menu() {
+  $items = array();
+  $items['accordion_module/setup/%'] = array(
+    'page callback' => 'accordion_module_canvas_setup',
+    'page arguments' => array(2),
+    'type' => MENU_CALLBACK,
+    'access arguments' => array(2),
+    'file' => 'includes/utils.inc',
+  );
+  $items['admin/config/content/accordion_module'] = array(
+    'title' => 'Accordion Module Configuration',
+    'description' => 'Configuration for The Accordion module',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('accordion_module_form'),
+    'access arguments' => array('access administration pages'),
+    'file' => 'includes/utils.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function accordion_module_block_info() {
+  $blocks['accordion_module'] = array(
+    'info' => t('Accordion Module'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function accordion_module_block_view($delta = '') {
+  $block = array();
+  switch ($delta) {
+    case 'accordion_module':
+      $block['subject'] = t('Block Name');
+      $block['content'] = array(
+        '#markup' => theme('accordion_module_view'),
+        '#attached' => array(
+          'css' => array(
+            drupal_get_path('module', 'accordion_module') . '/css/main.css',
+            drupal_get_path('module', 'accordion_module') . '/css/buttons.css',
+          ),
+          'js' => array(
+            drupal_get_path('module', 'accordion_rotator') . '//jquery/jquery-1.6.2.min.js',
+            drupal_get_path('module', 'accordion_module') . '/zAccordion/js/jquery.zaccordion.js',
+            drupal_get_path('module', 'accordion_module') . '/js/script.js',
+            drupal_get_path('module', 'accordion_module') . '/js/buttons.js',
+            drupal_get_path('module', 'accordion_module') . '/js/enquire.js',
+          ),
+        ),
+      );
+      // This settings variable is used in the js/accordion.js file to get the
+      // path for the left/right buttons.//
+      $my_settings = array(
+        'linkpath' => url(drupal_get_path('module', 'accordion_module')),
+      );
+      drupal_add_js(array('accordion_module' => $my_settings), 'setting');
+      break;
+  }
+  return $block;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function accordion_module_theme($existing, $type, $theme, $path) {
+  return array(
+    'accordion_module_view' => array(
+      'template' => 'theme/accordion-module',
+      'variables' => array(
+        'domain_url' => url(drupal_get_path('module', 'accordion_module')),
+        'block_data' => array(),
+      ),
+    ),
+  );
+}
